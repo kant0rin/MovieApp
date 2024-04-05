@@ -6,6 +6,6 @@
 ## Экраны
 |Главный|Подробная информация|Поиск в сети|Избранное|
 |:-:|:-:|:-:|:-:|
-|[Главный](Misc/homeScreen.gif)|
+|![Главный](Misc/homeScreen.gif)|![Подробная информация](Misc/detailsScreen.gif)|![Поиск](Misc/searchScreen.gif)|![Избранное](Misc/favouritesScreen.gif)|
 
 
