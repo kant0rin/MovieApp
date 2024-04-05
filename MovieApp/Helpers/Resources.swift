@@ -10,7 +10,9 @@ import UIKit
 enum Resources {
     enum Colors {
         static var background = UIColor(fromHex: "#0A071E")
-
+        static var goodFilmRating = UIColor(fromHex: "#3bb33a")
+        static var normalFilmRating = UIColor(fromHex: "#777777")
+        static var badColorFilmRating = UIColor(fromHex: "#ff0000")
     }
 }
 

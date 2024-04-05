@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+extension Date {
+    func monthName() -> String {
+            let df = DateFormatter()
+            df.setLocalizedDateFormatFromTemplate("MMM")
+            return df.string(from: self)
+    }
+}

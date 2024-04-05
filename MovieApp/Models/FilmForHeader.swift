@@ -7,17 +7,20 @@
 
 import Foundation
 
-struct HeaderFilmsResponse: Codable {
+struct HeaderFilmsResponse: Decodable {
     let items: [Film]
 }
 
-struct Film: Codable {
+struct Film: Decodable {
     let kinopoiskId: Int
     let nameRu: String
     let posterUrl: String
+    let countries: [Country]
+    let genres: [Genre]
+    let year: Int
 }
 
-struct FilmDescription: Codable{
+struct FilmDescription: Decodable{
     let description: String
     let shortDescription: String
     

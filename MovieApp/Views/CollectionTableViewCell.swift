@@ -7,16 +7,25 @@
 
 import UIKit
 
-class CollectionTableViewCell: UITableViewCell {
+protocol CollectionTableViewCellDelegate: AnyObject {
+    func collectionTableViewCellDidTap(_ cell: CollectionTableViewCell, viewModel: FilmDetailsViewModel)
+}
 
+class CollectionTableViewCell: UITableViewCell {
+    
     static let identifier = "CollectionTableViewCell"
+    
+    weak var delegate: CollectionTableViewCellDelegate?
+    
+    private var films: [Film] = []
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 140, height: 200)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(FilmForCollectionCell.self, forCellWithReuseIdentifier: FilmForCollectionCell.identifier)
+        collectionView.contentInsetAdjustmentBehavior = .never
         return collectionView
     }()
     
@@ -39,19 +48,41 @@ class CollectionTableViewCell: UITableViewCell {
         collectionView.frame = contentView.bounds
     }
     
+    public func configure(with films: [Film]){
+        self.films = films
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {return}
+            self.collectionView.reloadData()
+        }
+    }
+    
 }
 
 extension CollectionTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        films.count
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .green
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FilmForCollectionCell.identifier, for: indexPath) as? FilmForCollectionCell else { return UICollectionViewCell()}
+        
+        let film = films[indexPath.row]
+        
+        cell.configure(with: film)
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let filmId = films[indexPath.row].kinopoiskId
+        
+        let viewModel = FilmDetailsViewModel(id: filmId)
+        
+        delegate?.collectionTableViewCellDidTap(self, viewModel: viewModel)
     }
     
     

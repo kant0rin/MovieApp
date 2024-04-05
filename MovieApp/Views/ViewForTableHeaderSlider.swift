@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ViewForTableHeaderSliderDelegate: AnyObject {
+    func viewTapped(id: Int)
+}
+
 class ViewForTableHeaderSlider: UIView {
     
     let imageView = UIImageView()
@@ -14,12 +18,18 @@ class ViewForTableHeaderSlider: UIView {
     let filmDescriptionLabel = UILabel()
     let filmId: Int
     
-    required init(image: UIImage, filmTitle: String, filmDescription: String, filmId: Int, frame: CGRect) {
-        self.imageView.image = image
+    weak var delegate: ViewForTableHeaderSliderDelegate?
+    
+    required init(imageUrl: String, filmTitle: String, filmDescription: String, filmId: Int, frame: CGRect) {
+        self.imageView.sd_setImage(with: URL(string: imageUrl)!)
         self.filmTitleLabel.text = filmTitle
         self.filmDescriptionLabel.text = filmDescription
         self.filmId = filmId
         super.init(frame: frame)
+        
+        isUserInteractionEnabled = true
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(tapDetected))
+        addGestureRecognizer(singleTap)
         
         setupView()
         setupConstraints()
@@ -27,6 +37,10 @@ class ViewForTableHeaderSlider: UIView {
     
     required init?(coder: NSCoder) {
         fatalError()
+    }
+    
+    @objc func tapDetected() {
+        delegate?.viewTapped(id: filmId)
     }
     
     

@@ -22,17 +22,24 @@ class TableHeaderView: UIView {
     }
     
     
+    public func configureScrollView(with films:[Film]){
+        scrollView?.configure(with: films)
+    }
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension TableHeaderView: UIScrollViewDelegate {
+    
+    
     func setupViews(){
         
         addSubview(scrollView ?? UIView(frame: frame))
         
-        pageControl.numberOfPages = 3
+        pageControl.numberOfPages = 6
         pageControl.isUserInteractionEnabled = false
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         
@@ -45,6 +52,8 @@ extension TableHeaderView: UIScrollViewDelegate {
             pageControl.topAnchor.constraint(equalTo: bottomAnchor, constant: -50),
         ])
     }
+    
+    
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
             if let pageOffset = ScrollPageController().pageOffset(

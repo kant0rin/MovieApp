@@ -12,25 +12,16 @@ class TableHeaderScrollView: UIScrollView {
     
     var films: [Film] = []
     
+    weak var viewForTableDelegate: ViewForTableHeaderSliderDelegate?
+    
     init(dribblingDelegate: UIScrollViewDelegate, frame: CGRect) {
         super.init(frame: frame)
         
         delegate = dribblingDelegate
         isPagingEnabled = true
-        contentSize = CGSize(width: frame.width * 3, height: frame.height)
+        contentSize = CGSize(width: frame.width * 6, height: frame.height)
         showsHorizontalScrollIndicator = false
         
-        var imageViewRect = CGRect(origin: .zero, size: CGSize(width: frame.width, height: frame.height))
-        let vikings = ViewForTableHeaderSlider(image: UIImage(named: "vikings")!, filmTitle: "Викинги", filmDescription: "Lorem ipsum dolor sit amet consectetur. Eget dictum est penatibus eget nunc. Enim pellentesque venenatis enim.", filmId: 5567, frame: imageViewRect)
-        addSubview(vikings)
-        
-        imageViewRect.origin.x += imageViewRect.size.width
-        let breakingBad = ViewForTableHeaderSlider(image: UIImage(named: "breakingbad")!, filmTitle: "Во все тяжкие", filmDescription: "Lorem ipsum dolor sit amet consectetur. Eget dictum est penatibus eget nunc. Enim pellentesque venenatis enim.", filmId: 4532, frame: imageViewRect)
-        addSubview(breakingBad)
-        
-        imageViewRect.origin.x += imageViewRect.size.width
-        let queen = ViewForTableHeaderSlider(image: UIImage(named: "queen")!, filmTitle: "Ход королевы", filmDescription: "Lorem ipsum dolor sit amet consectetur. Eget dictum est penatibus eget nunc. Enim pellentesque venenatis enim.", filmId: 3231, frame: imageViewRect)
-        addSubview(queen)
     }
     
     required init?(coder: NSCoder) {
@@ -39,7 +30,32 @@ class TableHeaderScrollView: UIScrollView {
     
     public func configure(with model: [Film]) {
         self.films = model
+        
+        DispatchQueue.main.async {[weak self] in
+            guard let self else {return}
+            
+            var imageViewRect = CGRect(origin: .zero, size: CGSize(width: frame.width, height: frame.height))
+    
+            self.films[0...5].enumerated().forEach {
+                
+                let view = ViewForTableHeaderSlider(
+                    imageUrl: $0.element.posterUrl,
+                    filmTitle: $0.element.nameRu,
+                    filmDescription: "",
+                    filmId: $0.element.kinopoiskId,
+                    frame: imageViewRect)
+                
+                view.delegate = self.viewForTableDelegate
+           
+                self.addSubview(view)
+                
+                imageViewRect.origin.x += imageViewRect.size.width
+                
+            }
+            
+        }
     }
+    
     
 }
 
